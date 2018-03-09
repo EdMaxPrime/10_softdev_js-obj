@@ -3,6 +3,7 @@ var cbtn = document.getElementById("clear");
 var WIDTH = parseInt(svg.getAttribute("width"));
 var HEIGHT = parseInt(svg.getAttribute("height"));
 var makeCircle = function(x, y) {
+
     var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.addEventListener("click", circleMouseEvent);
     return {
@@ -16,25 +17,18 @@ var makeCircle = function(x, y) {
             this.elem.setAttribute("cx", this.x);
             this.elem.setAttribute("r", this.r);
             this.elem.setAttribute("fill", this.fill);
-            svgElement.appendChild(this);
+            svgElement.appendChild(this.elem);
         },
-        remove: function() {
-            //WRITE THIS
+          remove: function(){
+            svg.removeChild(this);
         },
         update: function(svgElement) {
-            this.remove();
+            this.remove(svgElement);
             this.display(svgElement);
         }
     };
 };
 
-var clearSVG = function() {
-    while(svg.children.length > 0) {
-        svg.children[0].remove();
-    }
-};
-
-//MOVE THIS INTO makeCircle() so its the first line
 var circleMouseEvent = function(evt) {
     if(this.fill == "green") {
         this.fill = "red";
@@ -44,6 +38,15 @@ var circleMouseEvent = function(evt) {
         makeCircle(Math.random() * WIDTH, Math.random() * HEIGHT).display(svg);
     }
 };
+
+var clearSVG = function() {
+    while(svg.children.length > 0) {
+        svg.children[0].remove();
+    }
+};
+
+//MOVE THIS INTO makeCircle() so its the first line
+
 
 var svgMouseEvent = function(evt) {
     if(evt.target == this) {
