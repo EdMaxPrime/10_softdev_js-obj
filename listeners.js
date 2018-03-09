@@ -4,12 +4,28 @@ var WIDTH = parseInt(svg.getAttribute("width"));
 var HEIGHT = parseInt(svg.getAttribute("height"));
 var makeCircle = function(x, y) {
     var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circle.setAttribute("cx", x);
-    circle.setAttribute("cy", y);
-    circle.setAttribute("r", "10");
-    circle.setAttribute("fill", "green");
     circle.addEventListener("click", circleMouseEvent);
-    return circle;
+    return {
+        x: x,
+        y: y,
+        r: 10,
+        fill: "green",
+        elem: circle,
+        display: function(svgElement) {
+            this.elem.setAttribute("cy", this.y);
+            this.elem.setAttribute("cx", this.x);
+            this.elem.setAttribute("r", this.r);
+            this.elem.setAttribute("fill", this.fill);
+            svgElement.appendChild(this);
+        },
+        remove: function() {
+            //WRITE THIS
+        },
+        update: function(svgElement) {
+            this.remove();
+            this.display(svgElement);
+        }
+    };
 };
 
 var clearSVG = function() {
@@ -18,18 +34,20 @@ var clearSVG = function() {
     }
 };
 
+//MOVE THIS INTO makeCircle() so its the first line
 var circleMouseEvent = function(evt) {
-    if(this.getAttribute("fill") == "green") {
-        this.setAttribute("fill", "red");
+    if(this.fill == "green") {
+        this.fill = "red";
+        this.update(svgElement);
     } else {
         this.remove();
-        svg.appendChild(makeCircle(Math.random() * WIDTH, Math.random() * HEIGHT));
+        makeCircle(Math.random() * WIDTH, Math.random() * HEIGHT).display(svg);
     }
 };
 
 var svgMouseEvent = function(evt) {
     if(evt.target == this) {
-        svg.appendChild(makeCircle(evt.offsetX, evt.offsetY));
+        makeCircle(evt.offsetX, evt.offsetY).display(svg);
     }
 };
 
